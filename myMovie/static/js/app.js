@@ -16,7 +16,11 @@ angular.module('myMovie', ['myMovieServices'])
 			templateUrl: '/static/partials/watch.html',
 			controller: WatchController
 		})
-		.when('/watch/:movieId', {
+		.when('/movie', {
+			templateUrl: '/static/partials/watch.html',
+			controller: WatchController
+		})
+		.when('/movie/:movieId', {
 			templateUrl: '/static/partials/movie.html',
 			controller: MovieController
 		})
