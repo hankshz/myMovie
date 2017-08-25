@@ -1,6 +1,16 @@
 'use strict';
 
-angular.module('myMovie', ['ngRoute', 'myMovieServices'])
+angular.module('myMovie',
+        [
+            'ngRoute',
+            "ngSanitize",
+            "com.2fdevs.videogular",
+            "com.2fdevs.videogular.plugins.controls",
+            "com.2fdevs.videogular.plugins.overlayplay",
+            "com.2fdevs.videogular.plugins.poster",
+            'myMovieServices'
+        ]
+    )
     .config(['$routeProvider', '$locationProvider',
         function($routeProvider, $locationProvider) {
         $routeProvider
@@ -23,6 +33,7 @@ angular.module('myMovie', ['ngRoute', 'myMovieServices'])
         .when('/movie/:movieId', {
             templateUrl: '/static/partials/movie.html',
             controller: MovieController,
+            controllerAs: "controller"
         })
         .when('/download', {
             templateUrl: '/static/partials/download.html',

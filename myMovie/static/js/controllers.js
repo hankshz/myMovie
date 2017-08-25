@@ -17,6 +17,12 @@ function WatchController($scope, Movie) {
 function MovieController($scope, $routeParams, $sce, Movie) {
     var movieQuery = Movie.get({ movieId: $routeParams.movieId}, function(movie) {
 		$scope.movie = movie;
+        $scope.player = {
+				sources: [
+					{src: $sce.trustAsResourceUrl(movie.location), type: "video/mp4"}
+				],
+				theme: "/static/css/videogular.css"
+			};
 	});
 }
 
