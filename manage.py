@@ -3,9 +3,14 @@
 import argparse
 
 from myMovie import db
+from myMovie.models import Movie
 
 def create_db():
     db.create_all()
+    for i in range(5):
+        movie = Movie(title='myTitle{}'.format(i), location='myLocation{}'.format(i))
+        db.session.add(movie)
+        db.session.commit()
 
 def drop_db():
     db.drop_all()
