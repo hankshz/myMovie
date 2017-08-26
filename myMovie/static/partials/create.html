@@ -49,7 +49,7 @@
                                 <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
                                     <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                                 </button>
-                                <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                <button type="button" class="btn btn-danger btn-xs" ng-click="uploader.removeItem(item);">
                                     <span class="glyphicon glyphicon-trash"></span> Remove
                                 </button>
                             </td>
@@ -70,7 +70,7 @@
                     <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
                         <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
                     </button>
-                    <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <button type="button" class="btn btn-danger btn-s" ng-click="uploader.removeAll();" ng-disabled="!uploader.queue.length">
                         <span class="glyphicon glyphicon-trash"></span> Remove all
                     </button>
                 </div>
@@ -79,7 +79,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">
-        <span class="glyphicon glyphicon-ok"></span>OK
+    <button class="btn btn-primary" type="button" ng-click="start()">
+        <span class="glyphicon glyphicon-ok"></span>Start
     </button>
 </div>

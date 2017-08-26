@@ -28,7 +28,8 @@ angular.module('myMovieControllers').controller('MovieController', ['$scope', '$
     });
 }]);
 
-angular.module('myMovieControllers').controller('CreateController', ['$scope', '$uibModalInstance', 'FileUploader', function($scope, $uibModalInstance, FileUploader){
+angular.module('myMovieControllers').controller('CreateController', ['$scope', '$uibModalInstance', 'FileUploader', 'Task', function($scope, $uibModalInstance, FileUploader, Task){
+    $scope.tasks = {}
     var uploader = $scope.uploader = new FileUploader({
             url: 'fileUpload'
         });
@@ -39,7 +40,7 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
         uploader.filters.push({
             name: 'syncFilter',
             fn: function(item /*{File|FileLikeObject}*/, options) {
-                console.log('syncFilter');
+                //console.log('syncFilter');
                 return this.queue.length < 10;
             }
         });
@@ -48,7 +49,7 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
         uploader.filters.push({
             name: 'asyncFilter',
             fn: function(item /*{File|FileLikeObject}*/, options, deferred) {
-                console.log('asyncFilter');
+                //console.log('asyncFilter');
                 setTimeout(deferred.resolve, 1e3);
             }
         });
@@ -56,48 +57,69 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
         // CALLBACKS
 
         uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-            console.info('onWhenAddingFileFailed', item, filter, options);
+            //console.info('onWhenAddingFileFailed', item, filter, options);
         };
         uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile', fileItem);
+            //console.info('onAfterAddingFile', fileItem);
         };
         uploader.onAfterAddingAll = function(addedFileItems) {
-            console.info('onAfterAddingAll', addedFileItems);
+            //console.info('onAfterAddingAll', addedFileItems);
         };
         uploader.onBeforeUploadItem = function(item) {
-            console.info('onBeforeUploadItem', item);
+            //console.info('onBeforeUploadItem', item);
         };
         uploader.onProgressItem = function(fileItem, progress) {
-            console.info('onProgressItem', fileItem, progress);
+            //console.info('onProgressItem', fileItem, progress);
         };
         uploader.onProgressAll = function(progress) {
-            console.info('onProgressAll', progress);
+            //console.info('onProgressAll', progress);
         };
         uploader.onSuccessItem = function(fileItem, response, status, headers) {
-            console.info('onSuccessItem', fileItem, response, status, headers);
+            $scope.tasks[fileItem.$$hashKey] = response;
         };
         uploader.onErrorItem = function(fileItem, response, status, headers) {
-            console.info('onErrorItem', fileItem, response, status, headers);
+            //console.info('onErrorItem', fileItem, response, status, headers);
         };
         uploader.onCancelItem = function(fileItem, response, status, headers) {
-            console.info('onCancelItem', fileItem, response, status, headers);
+            //console.info('onCancelItem', fileItem, response, status, headers);
         };
         uploader.onCompleteItem = function(fileItem, response, status, headers) {
-            console.info('onCompleteItem', fileItem, response, status, headers);
+            //console.info('onCompleteItem', fileItem, response, status, headers);
         };
         uploader.onCompleteAll = function() {
-            console.info('onCompleteAll');
+            //console.info('onCompleteAll');
         };
 
-        console.info('uploader', uploader);
+        uploader.removeItem = function(fileItem) {
+            fileItem.remove();
+            delete $scope.tasks[fileItem.$$hashKey];
+        }
 
-    $scope.ok = function () {
+        uploader.removeAll = function() {
+            uploader.clearQueue();
+            $scope.tasks={};
+        }
+
+        //console.info('uploader', uploader);
+
+    $scope.start = function () {
+        console.log('1');
+        for (var key in $scope.tasks){
+            console.log('2');
+            var task = new Task();
+            task.uploadedFileId = $scope.tasks[key]['id'];
+            task.$save(function() {
+                //console.log('task saved');
+            });
+        }
         $uibModalInstance.close();
     };
 }]);
 
-angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$uibModal', function ($scope, $uibModal) {
-    $scope.test = 'abc'
+angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$uibModal', 'Task', function ($scope, $uibModal, Task) {
+    $scope.taskQuery = Task.get({}, function(tasks) {
+        $scope.tasks = tasks.objects;
+    });
     $scope.create = function() {
         var modalInstance = $uibModal.open({
             animation: true,
@@ -110,7 +132,9 @@ angular.module('myMovieControllers').controller('DownloadController', ['$scope',
         });
 
         modalInstance.result.then(function () {
-            //Refresh page
+            $scope.taskQuery = Task.get({}, function(tasks) {
+                $scope.tasks = tasks.objects;
+            });
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });

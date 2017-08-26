@@ -1,3 +1,7 @@
 <div>
     <button type="button" class="btn btn-default" ng-click="create()">Create</button>
+    <div ng-repeat="task in tasks | orderBy: 'id':true ">
+        <h4>{{ task.id }}</h4>
+        <p>{{ task }}<p>
+    </div>
 </div>

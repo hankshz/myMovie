@@ -3,7 +3,7 @@
 import argparse
 
 from myMovie import db
-from myMovie.models import Movie
+from myMovie.models import *
 
 def create_db():
     db.create_all()
@@ -14,6 +14,10 @@ def create_db():
     for i in range(5):
         movie = Movie(title='myTitle{}'.format(i), location='myLocation{}'.format(i))
         db.session.add(movie)
+    uploadedFile = UploadedFile(originalName='originalName', hashName='hashName', extension='extension')
+    db.session.add(uploadedFile)
+    task = Task(uploadedFile=uploadedFile)
+    db.session.add(task)
     db.session.commit()
 
 def drop_db():
