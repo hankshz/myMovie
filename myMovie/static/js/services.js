@@ -12,5 +12,17 @@ angular.module('myMovieServices', ['ngResource'])
     })
 ;
 
+angular.module('myMovieServices', ['ngResource'])
+    .factory('Task', function($resource) {
+        return $resource('/api/task/:taskId', {}, {
+            query: {
+                method: 'GET',
+                params: { taskId: '' },
+                isArray: true
+            }
+        });
+    })
+;
+
 
 

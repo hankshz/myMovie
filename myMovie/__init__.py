@@ -10,3 +10,4 @@ apiManager = APIManager(app, flask_sqlalchemy_db=db)
 
 import myMovie.models
 import myMovie.controllers
+print(app.url_map)
