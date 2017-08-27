@@ -14,7 +14,7 @@ from myMovie import apiManager
 from myMovie.models import UploadedFile
 
 for model in app.config['API_MODELS']:
-    apiManager.create_api(model.modelClass, methods=model.modelMethods)
+    apiManager.create_api(model.modelClass, methods=model.modelMethods, postprocessors=model.postProcessors)
 
 @app.route('/fileUpload', methods=['POST'])
 def fileUpload():
@@ -28,9 +28,13 @@ def fileUpload():
         uploadedFile = request.files['file']
         if uploadedFile.filename != '':
             filename = secure_filename(uploadedFile.filename)
-            hashname = hashlib.md5(uploadedFile.read()).hexdigest()
             extension = file_extension(filename)
-            uploadedFile.save(os.path.join(app.config['UPLOAD_FOLDER'], hashname))
+            if extension not in ['torrent', 'metalink']:
+                abort(409)
+            content = uploadedFile.read()
+            hashname = hashlib.md5(content).hexdigest()
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], hashname), 'wb') as f:
+                f.write(content)
             dbFile = UploadedFile(originalName=filename, hashName=hashname, extension=extension)
             db.session.add(dbFile)
             db.session.commit()

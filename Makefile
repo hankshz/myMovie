@@ -1,6 +1,6 @@
 setup:
 	sudo apt-get update
-	sudo apt-get install -y python3-pip nginx
+	sudo apt-get install -y aria2 python3-pip nginx
 	sudo pip3 install -r requirements.txt
 
 production:
