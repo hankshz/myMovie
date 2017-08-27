@@ -103,9 +103,7 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
         //console.info('uploader', uploader);
 
     $scope.start = function () {
-        console.log('1');
         for (var key in $scope.tasks){
-            console.log('2');
             var task = new Task();
             task.uploadedFileId = $scope.tasks[key]['id'];
             task.$save(function() {
@@ -116,7 +114,7 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
     };
 }]);
 
-angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$uibModal', 'Task', function ($scope, $uibModal, Task) {
+angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$timeout', '$uibModal', 'Task', function ($scope, $timeout, $uibModal, Task) {
     $scope.taskQuery = Task.get({}, function(tasks) {
         $scope.tasks = tasks.objects;
     });
@@ -139,4 +137,15 @@ angular.module('myMovieControllers').controller('DownloadController', ['$scope',
             console.log('Modal dismissed at: ' + new Date());
         });
     };
+    $scope.onTimeout = function() {
+        $scope.taskQuery = Task.get({}, function(tasks) {
+            $scope.tasks = tasks.objects;
+        });
+        console.log('Periodic refreshing!');
+        $scope.mytimeout = $timeout($scope.onTimeout, 1000);
+    };
+    $scope.mytimeout = $timeout($scope.onTimeout, 1000);
+    $scope.$on('$locationChangeStart', function() {
+         $timeout.cancel($scope.mytimeout);
+    });
 }]);
