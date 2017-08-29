@@ -49,18 +49,18 @@ form {
         <a class="pull-right btn btn-primary" ng-click="create()"><i class="glyphicon glyphicon-plus"></i> Add</a>
         <h1 style="display: inline-block; width: 200px;">Downloads</h1>
     </div>
-    <div gridster="gridsterOptions">
+    <div gridster="gridsterOpts">
         <ul>
             <li gridster-item="download.grid" ng-repeat="(key, download) in downloads">
                 <div class="box">
                     <div class="box-header">
                         <div class="row">
-                            <div class="col-md-9">
+                            <div class="col-sm-9">
                                 <div class="progress" style="margin-bottom: 0;">
                                     <div class="progress-bar" role="progressbar" ng-style="{ 'width': download.completedLength*100/download.totalLength + '%' }">{{download.completedLength != '0' && download.completedLength == download.totalLength? 'Completed!' : unitConvert(download.downloadSpeed, 2)+'b/s'}}</div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-sm-3">
                                 <div class="box-header-btns pull-right">
                                     <a title="settings" ng-click="task;"><i class="glyphicon glyphicon-cog"></i></a>
                                 </div>

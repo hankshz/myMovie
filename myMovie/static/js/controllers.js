@@ -134,7 +134,9 @@ angular.module('myMovieControllers').controller('DownloadController', ['$scope',
     };
     $scope.gridsterOpts = {
         margins: [20, 20],
+        columns: 4,
         outerMargin: false,
+        swapping: true,
         pushing: true,
         floating: true,
         draggable: {
