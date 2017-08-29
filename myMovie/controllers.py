@@ -14,7 +14,8 @@ from myMovie import apiManager
 from myMovie.models import UploadedFile
 
 for model in app.config['API_MODELS']:
-    apiManager.create_api(model.modelClass, methods=model.modelMethods, postprocessors=model.postProcessors)
+    # TODO: enable pagination
+    apiManager.create_api(model.modelClass, results_per_page =0, max_results_per_page = 0, methods=model.modelMethods, postprocessors=model.postProcessors)
 
 @app.route('/fileUpload', methods=['POST'])
 def fileUpload():

@@ -114,10 +114,56 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
     };
 }]);
 
-angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$timeout', '$uibModal', 'Task', function ($scope, $timeout, $uibModal, Task) {
-    $scope.taskQuery = Task.get({}, function(tasks) {
-        $scope.tasks = tasks.objects;
-    });
+angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$timeout', '$uibModal', 'Task', 'Download', function ($scope, $timeout, $uibModal, Task, Download) {
+    $scope.unitConvert = function (num, digits) {
+        num = Number(num);
+        var si = [
+            { value: 1E18, symbol: "E" },
+            { value: 1E15, symbol: "P" },
+            { value: 1E12, symbol: "T" },
+            { value: 1E9,  symbol: "G" },
+            { value: 1E6,  symbol: "M" },
+            { value: 1E3,  symbol: "k" }
+        ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
+        for (i = 0; i < si.length; i++) {
+            if (num >= si[i].value) {
+              return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+            }
+        }
+        return num.toFixed(digits).replace(rx, "$1");
+    };
+    $scope.gridsterOpts = {
+        margins: [20, 20],
+        outerMargin: false,
+        pushing: true,
+        floating: true,
+        draggable: {
+            enabled: true
+        },
+        resizable: {
+            enabled: false,
+            handles: ['n', 'e', 's', 'w', 'se', 'sw']
+        }
+    };
+    $scope.refresh = 5000;
+    $scope.downloads = {};
+    $scope.downloadQuery = function() {
+        Download.get({}, function(downloads) {
+            for (var key in downloads.objects) {
+                if (key in $scope.downloads) {
+                    // TODO: optimize the copy
+                    $scope.downloads[key].status = downloads.objects[key].status;
+                    $scope.downloads[key].downloadSpeed = downloads.objects[key].downloadSpeed;
+                    $scope.downloads[key].completedLength = downloads.objects[key].completedLength;
+                    $scope.downloads[key].totalLength = downloads.objects[key].totalLength;
+                    $scope.downloads[key].files = downloads.objects[key].files;
+                } else {
+                    $scope.downloads[key] = downloads.objects[key];
+                }
+            }
+        });
+    }
+    $scope.downloadQuery();
     $scope.create = function() {
         var modalInstance = $uibModal.open({
             animation: true,
@@ -130,21 +176,17 @@ angular.module('myMovieControllers').controller('DownloadController', ['$scope',
         });
 
         modalInstance.result.then(function () {
-            $scope.taskQuery = Task.get({}, function(tasks) {
-                $scope.tasks = tasks.objects;
-            });
+            $scope.downloadQuery();
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });
     };
     $scope.onTimeout = function() {
-        $scope.taskQuery = Task.get({}, function(tasks) {
-            $scope.tasks = tasks.objects;
-        });
-        console.log('Periodic refreshing!');
-        $scope.mytimeout = $timeout($scope.onTimeout, 1000);
+        $scope.downloadQuery();
+        //console.log('Periodic refreshing!');
+        $scope.mytimeout = $timeout($scope.onTimeout, $scope.refresh);
     };
-    $scope.mytimeout = $timeout($scope.onTimeout, 1000);
+    $scope.mytimeout = $timeout($scope.onTimeout, $scope.refresh);
     $scope.$on('$locationChangeStart', function() {
          $timeout.cancel($scope.mytimeout);
     });

@@ -1,7 +1,102 @@
+<style>
+
+.controls {
+    margin-bottom: 20px;
+}
+.page-header {
+    margin-top: 20px;
+}
+ul {
+    list-style: none;
+}
+.box {
+    height: 100%;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+.box-header {
+    background-color: #eee;
+    padding: 0 30px 0 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: move;
+    position: relative;
+}
+.box-header h3 {
+    margin-top: 10px;
+    display: inline-block;
+}
+.box-content {
+    padding: 10px;
+}
+.box-header-btns {
+    right: 10px;
+    cursor: pointer;
+    position: absolute;
+}
+a {
+    color: #ccc;
+}
+form {
+    margin-bottom: 0;
+}
+.gridster {
+    border: 1px solid #ccc;
+}
+</style>
+
 <div>
-    <button type="button" class="btn btn-default" ng-click="create()">Create</button>
-    <div ng-repeat="task in tasks | orderBy: 'id':true ">
-        <h4>{{ task.id }}</h4>
-        <p>{{ task }}<p>
+    <div class="page-header">
+        <a class="pull-right btn btn-primary" ng-click="create()"><i class="glyphicon glyphicon-plus"></i> Add</a>
+        <h1 style="display: inline-block; width: 200px;">Downloads</h1>
+    </div>
+    <div gridster="gridsterOptions">
+        <ul>
+            <li gridster-item="download.grid" ng-repeat="(key, download) in downloads">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': download.completedLength*100/download.totalLength + '%' }">{{download.completedLength != '0' && download.completedLength == download.totalLength? 'Completed!' : unitConvert(download.downloadSpeed, 2)+'b/s'}}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="box-header-btns pull-right">
+                                    <a title="settings" ng-click="task;"><i class="glyphicon glyphicon-cog"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Name</th>
+                                    <th>Size</th>
+                                    <th>Progress</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="file in download.files">
+                                    <td><strong>{{file.name}}</strong></td>
+                                    <td nowrap>{{unitConvert(file.totalLength, 2)}}B</td>
+                                    <td>
+                                        <div class="progress" style="margin-bottom: 0;">
+                                            <div class="progress-bar" role="progressbar" ng-style="{ 'width': file.completedLength*100/file.totalLength + '%' }">{{file.completedLength != '0' && file.completedLength == file.totalLength? 'Completed!' : unitConvert(file.completedLength*100/file.totalLength, 2) + '%'}}</div>
+                                        </div>
+                                    </td>
+                                    <td nowrap>
+                                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="file.completedLength != file.totalLength;">
+                                            <span class="glyphicon glyphicon-upload"></span> Select
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>

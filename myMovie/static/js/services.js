@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('myMovieServices', ['ngResource'])
-    .factory('Movie', function($resource) {
+angular.module('myMovieServices', ['ngResource']);
+
+angular.module('myMovieServices').factory('Movie', function($resource) {
         return $resource('/api/movie/:movieId', {}, {
             query: {
                 method: 'GET',
@@ -12,8 +13,7 @@ angular.module('myMovieServices', ['ngResource'])
     })
 ;
 
-angular.module('myMovieServices', ['ngResource'])
-    .factory('Task', function($resource) {
+angular.module('myMovieServices').factory('Task', function($resource) {
         return $resource('/api/task/:taskId', {}, {
             query: {
                 method: 'GET',
@@ -24,5 +24,13 @@ angular.module('myMovieServices', ['ngResource'])
     })
 ;
 
-
-
+angular.module('myMovieServices').factory('Download', function($resource) {
+        return $resource('/api/download/:downloadId', {}, {
+            query: {
+                method: 'GET',
+                params: { downloadId: '' },
+                isArray: true
+            }
+        });
+    })
+;
