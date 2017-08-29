@@ -2,6 +2,7 @@ import os
 
 from apscheduler.schedulers.background import BackgroundScheduler
 import sqlalchemy
+from werkzeug.utils import secure_filename
 
 from myMovie import app
 from myMovie import db
@@ -32,12 +33,12 @@ def pollAria2():
                         downloadedFileDB.completedLength=downloading['completedLength']
                         downloadedFileDB.totalLength=downloading['length']
                     except sqlalchemy.orm.exc.NoResultFound:
-                        downloadedFileDB = DownloadedFile(completedLength=downloading['completedLength'], totalLength=downloading['length'], index=downloading['index'], path=downloading['path'], name=os.path.basename(downloading['path']), download=downloadDB)
+                        downloadedFileDB = DownloadedFile(completedLength=downloading['completedLength'], totalLength=downloading['length'], index=downloading['index'], path=os.path.abspath(downloading['path']), name=secure_filename(os.path.basename(downloading['path'])), download=downloadDB)
                         db.session.add(downloadedFileDB)
             except:
                 downloadDB.status = 'error'
         db.session.commit()
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=pollAria2, trigger='interval', seconds=5)
+scheduler.add_job(func=pollAria2, trigger='interval', seconds=1)
 scheduler.start()

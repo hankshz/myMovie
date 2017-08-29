@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Add to myMovie</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-5">
+                <div class="container-fluid">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                        <input type="text" class="form-control" required ng-model="movie.title"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="container-fluid">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-film"></i></span>
+                        <input type="text" class="form-control" required ng-model="movie.videoType"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="container-fluid">
+                    <button type="button" class="btn btn-success btn-s" ng-click="select();">
+                        <span class="glyphicon glyphicon-ok-sign"></span> Select
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="container-fluid">
+                    <button type="button" class="btn btn-danger btn-s" ng-click="cancel();">
+                        <span class="glyphicon glyphicon-remove-sign"></span> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

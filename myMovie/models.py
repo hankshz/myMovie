@@ -8,11 +8,6 @@ from myMovie import db
 
 APIModel = collections.namedtuple('APIModel', ['modelClass', 'modelMethods', 'postProcessors'])
 
-class Movie(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80))
-    location = db.Column(db.String(80))
-
 class UploadedFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     originalName = db.Column(db.String(80))
@@ -46,6 +41,14 @@ class DownloadedFile(db.Model):
     downloadId = db.Column(db.Integer, db.ForeignKey('download.id'))
     download = db.relationship(Download, backref=db.backref('files', lazy='dynamic'))
 
+class Movie(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80))
+    videoType = db.Column(db.String(16))
+    location = db.Column(db.String(80))
+    downloadFileId = db.Column(db.Integer, db.ForeignKey('downloaded_file.id'))
+    downloadFile = db.relationship(DownloadedFile, backref=db.backref('movies'))
+
 def create_downloads(result):
     task = Task.query.filter_by(id=result['id']).one()
     src = os.path.join(app.config['UPLOAD_FOLDER'], task.uploadedFile.hashName)
@@ -65,7 +68,7 @@ def create_downloads(result):
     db.session.commit()
 
 app.config['API_MODELS'] = [
-    APIModel(modelClass=Movie, modelMethods=['GET'], postProcessors={}),
+    APIModel(modelClass=Movie, modelMethods=['GET', 'POST'], postProcessors={}),
     APIModel(modelClass=UploadedFile, modelMethods=['GET'], postProcessors={}),
     APIModel(modelClass=Task, modelMethods=['GET', 'POST'], postProcessors={'POST': [create_downloads]}),
     APIModel(modelClass=Download, modelMethods=['GET'], postProcessors={}),

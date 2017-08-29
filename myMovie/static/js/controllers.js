@@ -20,11 +20,11 @@ angular.module('myMovieControllers').controller('MovieController', ['$scope', '$
     var movieQuery = Movie.get({ movieId: $routeParams.movieId}, function(movie) {
         $scope.movie = movie;
         $scope.player = {
-                sources: [
-                    {src: $sce.trustAsResourceUrl(movie.location), type: "video/mp4"}
-                ],
-                theme: "/static/css/videogular.css"
-            };
+            sources: [
+                {src: $sce.trustAsResourceUrl(movie.location), type: "video/"+movie.videoType}
+            ],
+            theme: "/static/css/videogular.css"
+        };
     });
 }]);
 
@@ -114,6 +114,24 @@ angular.module('myMovieControllers').controller('CreateController', ['$scope', '
     };
 }]);
 
+angular.module('myMovieControllers').controller('SelectController', ['$scope', '$uibModalInstance', 'Movie', 'selectedFile', function($scope, $uibModalInstance, Movie, selectedFile){
+    $scope.test = selectedFile;
+    $scope.movie = new Movie();
+    $scope.movie.downloadFileId = selectedFile.id;
+    $scope.movie.location = '/movies' + selectedFile.path;
+    $scope.movie.videoType = selectedFile.name.split('.').pop();
+    $scope.movie.title = selectedFile.name.slice(0, -(1+$scope.movie.videoType.length));
+    $scope.select = function () {
+        $scope.movie.$save(function() {
+            //console.log('movie saved');
+        });
+        $uibModalInstance.close();
+    };
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+}]);
+
 angular.module('myMovieControllers').controller('DownloadController', ['$scope', '$timeout', '$uibModal', 'Task', 'Download', function ($scope, $timeout, $uibModal, Task, Download) {
     $scope.unitConvert = function (num, digits) {
         num = Number(num);
@@ -179,6 +197,27 @@ angular.module('myMovieControllers').controller('DownloadController', ['$scope',
 
         modalInstance.result.then(function () {
             $scope.downloadQuery();
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
+    };
+    $scope.select = function(file) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: '/static/partials/select.html',
+            controller: 'SelectController',
+            size: 'lg',
+            appendTo: undefined,
+            resolve: {
+                selectedFile: function () {
+                    return file;
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });
