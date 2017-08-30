@@ -59,7 +59,7 @@ def create_downloads(result):
         db.session.add(download)
         task.downloads.append(download)
     elif task.uploadedFile.extension == 'metalink':
-        gids = aria2Server.addMetalink(src, options={'rpc-save-upload-metadata':False, 'dir':dst})
+        gids = aria2Server.addMetalink(src, options={'rpc-save-upload-metadata':False, 'max-upload-limit':1, 'dir':dst})
         print(gids)
         for gid in gids:
             download = Download(gid=gid, status='initializing')
