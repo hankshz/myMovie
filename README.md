@@ -1,11 +1,11 @@
 # myMovie
 
-myMovie is a single page application that is integrated with Nginx & Aria2 & docker.
+myMovie is a single page application that is integrated with Nginx & Aria2 & Docker.
 It allows you to:
 
   - Run the app as a docker image on any OS
   - Download videos with Bittorrent and Metalink by using Arira2
-  - Select the downloaded videos and watch them from any host (PC/Tablet/Phone) within the network by using nginx
+  - Select the downloaded videos and watch them from any host (PC/Tablet/Phone) within the network by using Nginx
 
 Usage
 
